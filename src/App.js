@@ -64,7 +64,7 @@ class App extends React.Component {
 
           {this.state.data && this.state.data.data &&
             <Row gutter={[50, 50]} style={{ marginTop: 50, padding: 50 }}>
-              <Title style={{ paddingBottom: 50 }}>State Wise COVID-19 Tracker</Title>
+              <Title style={{ paddingBottom: 50, fontSize:30 }}>State Wise COVID-19 Tracker</Title>
               <StateWiseChart data={this.state.data} />
             </Row>
           }
