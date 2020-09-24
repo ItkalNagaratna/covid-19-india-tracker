@@ -1,26 +1,78 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import DefaultLayout from './components/DefaultLayout'
+import { CardComponent } from './components/Cards'
+import { StateWiseChart } from './components/Charts'
+import { fetchData } from './api'
+import { Row, Typography } from 'antd';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const { Title } = Typography;
+
+class App extends React.Component {
+
+  state = {
+    data: {}
+  }
+
+  async componentDidMount() {
+    const data = await fetchData();
+
+    console.log("data", data)
+
+    const confirmed = data.reduce((count, item) => {
+      return count + item.confirmed;
+    }, 0);
+    // console.log("confirmed", confirmed);
+    const recovered = data.reduce((count, item) => {
+      return count + item.recovered;
+    }, 0);
+    // console.log("recovered", recovered);
+
+    const active = data.reduce((count, item) => {
+      return count + item.active;
+    }, 0);
+    // console.log("active", active);
+
+    const deaths = data.reduce((count, item) => {
+      return count + item.deaths;
+    }, 0);
+    // console.log("deaths", deaths);
+
+    this.setState({
+      data: {
+        confirmed,
+        recovered,
+        active,
+        deaths,
+        data,
+      }
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <DefaultLayout>
+
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <img
+              width={600}
+              src={require('./assets/COVID-19a.png')}
+            />
+          </div>
+
+          <CardComponent hoverable data={this.state.data} />
+
+          {this.state.data && this.state.data.data &&
+            <Row gutter={[50, 50]} style={{ marginTop: 50, padding: 50 }}>
+              <Title style={{ paddingBottom: 50 }}>State Wise COVID-19 Tracker</Title>
+              <StateWiseChart data={this.state.data} />
+            </Row>
+          }
+
+        </DefaultLayout>
+      </div>
+    );
+  }
 }
 
 export default App;
